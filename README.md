@@ -24,7 +24,7 @@ As configurações de treinamento são as mesmas, mudando apenas o nome do scrip
 
 ```bash
 python train.py --ticker WEGE3.SA \
-    --period 5y --window-size 60 --epochs 30 \
+    --period 5y --window-size 10 --epochs 5 \
     --batch-size 32
 ```
 
@@ -32,10 +32,10 @@ python train.py --ticker WEGE3.SA \
 
 Para otimizar hiperparâmetros com Optuna (batch size, hidden sizes, dropout, learning rate, patience), use os parâmetros `tune` e `trials`:
 
-```
+```bash
 python train.py --ticker WEGE3.SA \
-    --period 5y --window-size 60 --epochs 30 \
-    --tune --trials 20
+    --period 5y --window-size 10 --epochs 5 \
+    --tune --trials 5
 ```
 
 Saidas geradas:
