@@ -1,0 +1,13 @@
+.venv
+__pycache__
+
+models/*
+models_multi/*
+artifacts/*
+artifacts_multi/*
+!models/.gitkeep
+!models_multi/.gitkeep
+!artifacts/.gitkeep
+!artifacts_multi/.gitkeep
+
+scratchpad

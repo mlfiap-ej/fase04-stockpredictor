@@ -1,0 +1,6 @@
+models/
+models_multi/
+notebooks/
+artifacts/
+artifacts_multi/
+.venv

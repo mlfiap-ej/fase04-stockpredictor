@@ -1,0 +1,16 @@
+POST http://localhost:8009/predict 
+Content-Type: application/json
+
+{
+    "n_days": 10
+    // ,"prices": [37.0, 37.9, 38.5, 43.0, 28.5]
+}
+
+###
+
+GET http://localhost:8009/metrics
+
+
+###
+
+GET http://localhost:8000/health

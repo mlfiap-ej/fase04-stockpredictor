@@ -1,0 +1,50 @@
+FROM python:3.12-slim as trainer
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+ENV TICKER=WEGE3.SA
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copiar e instalar dependências Python
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copiar código da aplicação
+# COPY api/ api/
+COPY train_multi.py .
+
+# Efetuar o treinamento do modelo 
+RUN python train_multi.py --ticker $TICKER --epochs 3 --tune --trials 1
+
+###
+### levando apenas o necessário para a API, sem o código de treinamento e dependências extras
+###
+
+FROM python:3.12-slim as runtime
+
+RUN apt-get update && \
+    rm -rf /var/lib/apt/lists/*
+    
+WORKDIR /app 
+
+COPY --from=trainer models_multi/ models/
+COPY ./requirements-api.txt . 
+COPY ./api/ api/
+
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements-api.txt
+
+# Expor porta
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
+
+# Comando de inicialização
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
